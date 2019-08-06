@@ -1,106 +1,133 @@
 'use strict';
-const cond1 = false;
-const cond2 = true;
-const cond3 = true;
-const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+let array = [];
+let divsArray = [];
+let gameArray = [];
 const btn = document.querySelector('.js__btn');
 const bingoNum = document.querySelector('.js__bingoNums');
+const gamediv = document.querySelector('.js__randNums');
+const win = document.querySelector('.win');
+const initBtn = document.querySelector('.init');
 let gCounter = 0;
 
+// Vamos a crear el tablero de juego con estas funciones
+
 function randNumGenerator(){
-  console.log('Genero un numero aleatorio entre 1 y 100 y lo devuelvo');
-  iamNum();
+  const randNum = Math.floor(Math.random() * 100) + 1;
+  checkList(randNum, array);
+  return randNum;
 }
-function iamNum(){
-  console.log('Soy el numero generado');
-  checkList();
-}
-function checkList(){
-  console.log('Compruebo si mi numero esta en la lista');
-  if(cond1 === true){
-    inList();
-  }else{
-    notInList();
+
+function checkList(num, arr1){
+  if(arr1.legth){
+    if(arr1.includes(num)){
+      randNumGenerator();
+    }else{
+      array.push(num);
+      checkLengthList(arr1);
+    }
   }
+  else{
+    array.push(num);
+    checkLengthList(array, 20);
+  }
+  return array;
 }
-function notInList(){
-  console.log('El numero no    inList();esta en la lista');
-  addToList();
-}
-function inList(){
-  console.log('El numero ya esta en la lista');
-  randNumGenerator();
-}
-function addToList(){
-  console.log('Añado el numero en la lista');
-  checkLengthList();
-}
-function checkLengthList(){
-  console.log('Compruebo que el la longitud de la lista es menor que vente');
-  if (cond2 === true){
-    createElements();
+
+function checkLengthList(list, max){
+  if (list.length === max){
+    createElements(array);
   }else{
     randNumGenerator();
   }
 }
-function createElements(){
+
+function createElements(l){
   let counter = 0;
-  for (let item in array){
+  for (let item of l){
     const div = document.createElement('div');
     const content = document.createTextNode(item);
     div.appendChild(content);
+    div.classList.add(`numberDiv`);
     div.classList.add(`div${counter}`);
     div.classList.add(`empty`);
     bingoNum.appendChild(div);
     counter += 1;
   }
-  console.log('creo los elementos y los selecciono todos y los meto en un array');
+  divsArray = bingoNum.querySelectorAll('.numberDiv');
+  return divsArray;
 }
-function getIndex(){
-  console.log('consigo el indice del numero generado con array.indexOf(num)');
-  findDiv();
+
+randNumGenerator();
+
+// Ahora ya he creado el tablero de juego y tenemos que empezar a jugar.
+
+function randNumGenerator2(){
+  const randNum = Math.floor(Math.random() * 100) + 1;
+  if(gameArray.length){
+    if(gameArray.includes(randNum)){
+      randNumGenerator2();
+    }else{
+      creatediv(randNum);
+    }
+  }
+  else{
+    creatediv(randNum);
+  }
+  return gameArray, randNum;
 }
-function findDiv(){
-  console.log('Recorro el array de los divs y busco el elemento con la clase div${index}');
-  changeStyle();
+function creatediv(n){
+  gameArray.push(n);
+  const div = document.createElement('div');
+  const content = document.createTextNode(n);
+  div.appendChild(content);
+  div.classList.add(`gameDiv`);
+  gamediv.appendChild(div);
+  checkList2(n, array);
 }
-function changeStyle(){
-  console.log('Eliminar la clase style normal y añadir clase style selected');
+function checkList2(num, ar){
+  for (let i of ar){
+    if(i === num){
+      getIndex(i, array);
+    }
+  }
+}
+function getIndex(b, arr){
+  const arrayIndex = arr.indexOf(b);
+  findDiv(arrayIndex, divsArray);
+}
+function findDiv(num2, arr2){
+  for(let item of arr2){
+    if(item.classList.contains(`div${num2}`)){
+      item.classList.remove('empty');
+      item.classList.add('selected');
+    }
+  }
   gameCounter();
 }
 function gameCounter(){
   gCounter += 1;
-  console.log('Añado uno al contador de juego');
-  checkCounter();
+
+  checkCounter(gCounter);
   return gCounter;
 }
-function checkCounter(){
-  if(cond3===true){
-    console.log('El contador ha llegado a 20');
+function checkCounter(c){
+  if(c===20){
     bingo();
-  }
-  else{
-    console.log('Aún no tenemos ganador');
   }
 }
 function bingo(){
-  console.log('has ganado');
+  win.classList.toggle('hidden');
 }
-randNumGenerator();
-function randNumGenerator2(){
-  console.log('Genero un numero aleatorio para jugar entre 1 y 100 y lo devuelvo');
-  iamNum2();
+function init(){
+  win.classList.toggle('hidden');
+  array = [];
+  divsArray = [];
+  gameArray = [];
+  bingoNum.innerHTML = '';
+  gamediv.innerHTML = '';
+  randNumGenerator();
 }
-function iamNum2(){
-  console.log('Soy el numero generado para jugar');
-  checkList2();
-}
-function checkList2(){
-  console.log('Compruebo si mi numero esta en la lista');
-  if(cond1 === true){
-    getIndex();
-  }else{
-    console.log('pide otro número para jugar');
-  }
-}
+
 btn.addEventListener('click', randNumGenerator2);
+initBtn.addEventListener('click', init);
