@@ -19,16 +19,18 @@ function randNumGenerator(){
 }
 
 function checkList(num, arr1){
-  if(arr1.legth){
+  console.log(arr1);
+  if(arr1.length){
+    console.log('existe length', arr1);
     if(arr1.includes(num)){
       randNumGenerator();
     }else{
-      array.push(num);
-      checkLengthList(arr1);
+      arr1.push(num);
+      checkLengthList(array, 20);
     }
   }
   else{
-    array.push(num);
+    arr1.push(num);
     checkLengthList(array, 20);
   }
   return array;
